@@ -26,10 +26,14 @@ function Ball:update(dt)
     self.y = self.y + self.vy*dt
 end
 
+
 function Ball:applySpin(paddle)
     dspeed = math.abs(paddle.vy -self.vy)
-    if paddle.vy < 0 then
-    self.spin = self.spin - (dspeed)/self.r
+    if paddle.x < self.x then
+        self.spin = self.spin - (dspeed)/self.r
+    else
+        self.spin = self.spin + (dspeed)/self.r
+    end
 end
 
 function Ball:reset()
@@ -38,6 +42,7 @@ function Ball:reset()
     self.y = GAME_HEIGHT/2
     self.vx = BALL_SPEED*math.cos(angle)
     self.vy = BALL_SPEED*math.sin(angle)
+    self.spin = 0
 end
 
 function Ball:collides(paddle)
