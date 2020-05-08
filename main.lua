@@ -133,7 +133,6 @@ function love.update(dt)
         player2.vy = 0
     end
 
-    --La razón de cambio del tamaño de la pelota en pantalla debe ser cuadrática
 
     player1:update(dt)
     player2:update(dt)
@@ -143,7 +142,7 @@ function love.update(dt)
 end
 
 function love.draw()
-    push:apply('start') --acuérdate de empezar push en draw
+    push:start() --acuérdate de empezar push en draw
     love.graphics.clear(love.math.colorFromBytes(23,24,67,255))
 
     love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
@@ -159,7 +158,7 @@ function love.draw()
     --Pelota
     ball:draw()
 
-    push:apply('end') --y acuérdate de cerrarlo también
+    push:finish() --y acuérdate de cerrarlo también
 end
 
 function displayScore()
