@@ -1,1 +1,5 @@
-TitleState = Class{__include = BaseState}
+TitleState = Class{__includes = BaseState}
+
+function TitleState:init()
+    --nara
+end

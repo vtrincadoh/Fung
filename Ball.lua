@@ -23,6 +23,7 @@ end
 
 function Ball:update(dt)
     self.x = self.x + self.vx*dt
+    --self.vy = 0
     self.y = self.y + self.vy*dt
 end
 
