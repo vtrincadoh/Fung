@@ -1,0 +1,1 @@
+TitleState = Class{__include = BaseState}

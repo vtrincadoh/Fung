@@ -7,6 +7,8 @@ require 'Ball'
 require 'StateMachine'
 require 'states/BaseState'
 require 'states/PlayState'
+require 'states/TitleState'
+require 'states/ServeState'
 
 --Constantes
 WINDOW_WIDTH = 1080
@@ -55,6 +57,15 @@ function love.load()
     ball = Ball({})
     ball:reset()
     print(math.deg(angle))
+
+    --Inicializar máquina de estados
+    gStateMachine = StateMachine{
+        ['title'] = function() return TitleState() end,
+        ['serve'] = function() return ServeState() end,
+        ['play'] = function() return PlayState() end    
+    }
+
+    gStateMachine:change('title')
 
     --Tabla de entradas
     love.keyboard.keysPressed = {}
