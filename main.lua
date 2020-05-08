@@ -1,14 +1,5 @@
---Inclusiones
-Class = require 'class'
-push = require 'push'
-require 'Paddle'
-require 'Ball'
+require 'src/Dependencies'
 
-require 'StateMachine'
-require 'states/BaseState'
-require 'states/PlayState'
-require 'states/TitleState'
-require 'states/ServeState'
 
 --Constantes
 WINDOW_WIDTH = 1080
