@@ -6,6 +6,7 @@ require 'Ball'
 
 require 'StateMachine'
 require 'states/BaseState'
+require 'states/PlayState'
 
 --Constantes
 WINDOW_WIDTH = 1080
