@@ -29,7 +29,7 @@ end
 
 
 function Ball:applySpin(paddle)
-    dspeed = math.abs(paddle.vy -self.vy)
+    dspeed = paddle.vy -self.vy
     if paddle.x < self.x then
         self.spin = self.spin - (dspeed)/self.r
     else
