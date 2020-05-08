@@ -139,6 +139,8 @@ function love.update(dt)
     ball:update(dt)
     print(ball.spin)
 
+    love.keyboard.keysPressed = {}
+
 end
 
 function love.draw()
