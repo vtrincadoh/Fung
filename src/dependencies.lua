@@ -1,5 +1,8 @@
 Class = require 'lib/class'
 push = require 'lib/push'
+moonshine = require 'moonshine'
+
+require 'src/constants'
 
 require 'src/Paddle'
 require 'src/Ball'

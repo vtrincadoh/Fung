@@ -1,0 +1,21 @@
+--Constantes
+WINDOW_WIDTH = 1080
+WINDOW_HEIGHT = 720
+
+GAME_WIDTH = 360
+GAME_HEIGHT = 240
+
+MARGIN = 15
+
+PADDLE_WIDTH = 10
+PADDLE_HEIGHT = 40
+
+BALL_SPEED = 100
+
+PADDLE_SPEED = 150
+
+COLORS = {
+    ['bckg'] = {23, 24, 67, 255},
+    ['ball'] = {0xFF, 0x7F, 0, 255}
+}
+--Fin constantes

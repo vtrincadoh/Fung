@@ -17,13 +17,13 @@ function PlayState:update(dt)
 
         self.ball.x = self.player1.x + self.player1.w + self.ball.r
         self.ball.vx = -self.ball.vx * 1.05
-        self.ball:applySpin(self.player1)
+        self.ball:speedToSpin(self.player1)
     end
 
     if self.ball:collides(self.player2) then
         self.ball.x = self.player2.x - self.ball.r
         self.ball.vx = -self.ball.vx * 1.05
-        self.ball:applySpin(self.player2)
+        self.ball:speedToSpin(self.player2)
     end
 
     --Condiciones de borde
@@ -72,6 +72,7 @@ end
 
 function PlayState:draw()
     
+    love.graphics.line(GAME_WIDTH/2, MARGIN, GAME_WIDTH/2,GAME_HEIGHT-MARGIN)
     --Mostrar puntaje
     displayScore(self.player1, self.player2)
     

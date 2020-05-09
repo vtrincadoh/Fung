@@ -1,22 +1,5 @@
-require 'src/Dependencies'
-local moonshine = require 'moonshine'
+require 'src/dependencies'
 
---Constantes
-WINDOW_WIDTH = 1080
-WINDOW_HEIGHT = 720
-
-GAME_WIDTH = 360
-GAME_HEIGHT = 240
-
-MARGIN = 15
-
-PADDLE_WIDTH = 10
-PADDLE_HEIGHT = 40
-
-BALL_SPEED = 100
-
-PADDLE_SPEED = 150
---Fin constantes
 
 function gaussian_curve(x,amp,prom,dsv)
     variacion = (x-prom)^2
@@ -31,8 +14,11 @@ function love.load()
     --Seed
     math.randomseed(os.time())
 
+    smallFont = love.graphics.newFont('font.ttf', 8)
+    mediumFont = love.graphics.newFont('font.ttf', 24)
     scoreFont = love.graphics.newFont('font.ttf', 32)
-    love.graphics.setFont(scoreFont)
+    titleFont = love.graphics.newFont('font.ttf', 46)
+    love.graphics.setFont(mediumFont)
 
 
     -- Pa poner una resolución específica
@@ -57,7 +43,7 @@ function love.load()
         ['play'] = function() return PlayState() end    
     }
 
-    gStateMachine:change('play')
+    gStateMachine:change('title')
 
     --Tabla de entradas
     love.keyboard.keysPressed = {}
@@ -91,18 +77,17 @@ end
 
 function love.draw()
     push:start() --acuérdate de empezar push en draw
-    love.graphics.setBackgroundColor(love.math.colorFromBytes(23,24,67,255))
-    love.graphics.clear(love.graphics.getBackgroundColor())
-
-
-    love.graphics.line(GAME_WIDTH/2, MARGIN, GAME_WIDTH/2,GAME_HEIGHT-MARGIN)
+    love.graphics.clear(love.math.colorFromBytes(COLORS['bckg']))
 
     gStateMachine:draw()
-    love.graphics.setColor(love.graphics.getBackgroundColor())
+    love.graphics.setColor(love.math.colorFromBytes(COLORS['bckg']))
     love.graphics.rectangle('fill',0,0,MARGIN,GAME_HEIGHT)
     love.graphics.rectangle('fill', GAME_WIDTH-MARGIN, 0, MARGIN, GAME_HEIGHT)
     love.graphics.setColor(1,1,1,1)
     love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
+
+    displayFPS()
+
     push:finish() --y acuérdate de cerrarlo también
 end
 
@@ -110,4 +95,11 @@ function displayScore(player1, player2)
     love.graphics.setFont(scoreFont)
     love.graphics.print(tostring(player1.score), GAME_WIDTH/2 - 50, GAME_HEIGHT/3)
     love.graphics.print(tostring(player2.score), GAME_WIDTH/2 + 30, GAME_HEIGHT/3)
+end
+
+function displayFPS()
+    love.graphics.setFont(smallFont)
+    love.graphics.setColor(0,1,0,1)
+    love.graphics.print('FPS: '..tostring(love.timer.getFPS()), 5, 5)
+    love.graphics.setColor(1,1,1,1)
 end

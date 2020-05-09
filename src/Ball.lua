@@ -17,7 +17,7 @@ function Ball:init(x, y, vx, vy)
 end
 
 function Ball:draw()
-    love.graphics.setColor(love.math.colorFromBytes(0xff,0x7f,0,0xff))
+    love.graphics.setColor(love.math.colorFromBytes(COLORS['ball']))
     love.graphics.ellipse('fill', self.x, self.y, self.r, self.r)
     love.graphics.setColor(1,1,1,1)
 end
@@ -29,7 +29,7 @@ function Ball:update(dt)
 end
 
 
-function Ball:applySpin(paddle)
+function Ball:speedToSpin(paddle)
     dspeed = paddle.vy -self.vy
     if paddle.x < self.x then
         self.spin = self.spin - (dspeed)/self.r
