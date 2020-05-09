@@ -38,6 +38,7 @@ function Ball:applySpin(paddle)
 end
 
 function Ball:reset()
+    math.randomseed(os.time())
     angle = 2*math.pi*math.random()
     self.x = GAME_WIDTH/2
     self.y = GAME_HEIGHT/2
@@ -47,7 +48,7 @@ function Ball:reset()
 end
 
 function Ball:collides(paddle)
-    if (self.x - self.r) > (paddle.x + paddle.w) or (self.x + self.r)<(paddle.x) then
+    if (self.x - self.r+1) > (paddle.x + paddle.w) or (self.x + self.r-1)<(paddle.x) then
         return false
     end
     if (self.y - self.r)>(paddle.y + paddle.h) or (self.y + self.r)<(paddle.y) then

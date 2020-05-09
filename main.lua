@@ -1,5 +1,5 @@
 require 'src/Dependencies'
-
+local moonshine = require 'moonshine'
 
 --Constantes
 WINDOW_WIDTH = 1080
@@ -39,15 +39,14 @@ function love.load()
         fullscreen = false,
         resizable = false
     })
-    
-   --Inicializa los objetos 
-    math.randomseed(os.time())
-    player1 = Paddle(MARGIN+5, GAME_HEIGHT/2 - PADDLE_HEIGHT/2, PADDLE_WIDTH, PADDLE_HEIGHT)
-    player2 = Paddle(GAME_WIDTH-MARGIN-5-PADDLE_WIDTH, GAME_HEIGHT/2 - PADDLE_HEIGHT/2, PADDLE_WIDTH, PADDLE_HEIGHT)
 
-    ball = Ball({})
-    ball:reset()
-    print(math.deg(angle))
+    --Post procesado
+    --[[
+    effect = moonshine(moonshine.effects.scanlines).chain(moonshine.effects.crt)
+    effect.resize(push:getDimensions())
+    effect.disable("scanlines")
+    ]]--
+    
 
     --Inicializar máquina de estados
     gStateMachine = StateMachine{
@@ -56,7 +55,7 @@ function love.load()
         ['play'] = function() return PlayState() end    
     }
 
-    gStateMachine:change('title')
+    gStateMachine:change('play')
 
     --Tabla de entradas
     love.keyboard.keysPressed = {}
@@ -69,9 +68,6 @@ function love.keypressed(key)
 
     if key == 'escape' then
         love.event.quit()
-    end
-    if key == 'o' then
-        ball:reset()
     end
 
 end
@@ -86,87 +82,25 @@ end
 
 function love.update(dt)
 
-    --Colisiones con paletas
-    if ball:collides(player1) then
-        ball.x = player1.x + player1.w + ball.r
-        ball.vx = -ball.vx * 1.05
-        ball:applySpin(player1)
-    end
-
-    if ball:collides(player2) then
-        ball.x = player2.x - ball.r
-        ball.vx = -ball.vx * 1.05
-        ball:applySpin(player2)
-    end
-
-    --Condiciones de borde
-    if (ball.y - ball.r) <= (MARGIN) then
-        ball.y = MARGIN + ball.r
-        ball.vy = -ball.vy
-    end
-    if (ball.y + ball.r) >= (GAME_HEIGHT-MARGIN) then
-        ball.y = GAME_HEIGHT - MARGIN - ball.r
-        ball.vy = -ball.vy 
-    end
-    
-    if ball.x < MARGIN then
-        player2.score = player2.score + 1
-        ball:reset()
-    end
-    if ball.x > GAME_WIDTH - MARGIN then
-        player1.score = player1.score + 1
-        ball:reset()
-    end
-
-
-    --Input
-    if love.keyboard.isDown('w') then
-        player1.vy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('s') then
-        player1.vy = PADDLE_SPEED
-    else
-        player1.vy = 0
-    end
-
-    if love.keyboard.isDown('up') then
-        player2.vy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.vy = PADDLE_SPEED
-    else
-        player2.vy = 0
-    end
-
-
-    player1:update(dt)
-    player2:update(dt)
-    ball:update(dt)
-    print(ball.spin)
-
+    gStateMachine:update(dt)
     love.keyboard.keysPressed = {}
 
 end
 
 function love.draw()
     push:start() --acuérdate de empezar push en draw
+    
     love.graphics.clear(love.math.colorFromBytes(23,24,67,255))
 
     love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
     love.graphics.line(GAME_WIDTH/2, MARGIN, GAME_WIDTH/2,GAME_HEIGHT-MARGIN)
 
-    --Mostrar puntaje
-    displayScore()
-
-    --Paddle
-    player1:draw()
-    player2:draw()
-
-    --Pelota
-    ball:draw()
-
+    gStateMachine:draw()
+    
     push:finish() --y acuérdate de cerrarlo también
 end
 
-function displayScore()
+function displayScore(player1, player2)
     love.graphics.setFont(scoreFont)
     love.graphics.print(tostring(player1.score), GAME_WIDTH/2 - 50, GAME_HEIGHT/3)
     love.graphics.print(tostring(player2.score), GAME_WIDTH/2 + 30, GAME_HEIGHT/3)
