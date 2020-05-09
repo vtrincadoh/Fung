@@ -13,7 +13,7 @@ function StateMachine:init(states)
 end
 
 function StateMachine:change(stateName, enterParams)
-    assert(self.states[stateName], "That state does not exist!") --error si no existe el estado
+    assert(self.states[stateName], "State \'"..stateName.."\' does not exist!") --error si no existe el estado
     self.current:exit()
     self.current = self.states[stateName]()
     self.current:enter(enterParams)
