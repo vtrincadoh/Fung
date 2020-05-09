@@ -19,6 +19,7 @@ end
 function Ball:draw()
     love.graphics.setColor(love.math.colorFromBytes(0xff,0x7f,0,0xff))
     love.graphics.ellipse('fill', self.x, self.y, self.r, self.r)
+    love.graphics.setColor(1,1,1,1)
 end
 
 function Ball:update(dt)
@@ -38,7 +39,6 @@ function Ball:applySpin(paddle)
 end
 
 function Ball:reset()
-    math.randomseed(os.time())
     angle = 2*math.pi*math.random()
     self.x = GAME_WIDTH/2
     self.y = GAME_HEIGHT/2

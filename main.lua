@@ -28,6 +28,8 @@ end
 function love.load()
     
     love.graphics.setDefaultFilter('nearest', 'nearest')
+    --Seed
+    math.randomseed(os.time())
 
     scoreFont = love.graphics.newFont('font.ttf', 32)
     love.graphics.setFont(scoreFont)
@@ -89,14 +91,18 @@ end
 
 function love.draw()
     push:start() --acuérdate de empezar push en draw
-    
-    love.graphics.clear(love.math.colorFromBytes(23,24,67,255))
+    love.graphics.setBackgroundColor(love.math.colorFromBytes(23,24,67,255))
+    love.graphics.clear(love.graphics.getBackgroundColor())
 
-    love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
+
     love.graphics.line(GAME_WIDTH/2, MARGIN, GAME_WIDTH/2,GAME_HEIGHT-MARGIN)
 
     gStateMachine:draw()
-    
+    love.graphics.setColor(love.graphics.getBackgroundColor())
+    love.graphics.rectangle('fill',0,0,MARGIN,GAME_HEIGHT)
+    love.graphics.rectangle('fill', GAME_WIDTH-MARGIN, 0, MARGIN, GAME_HEIGHT)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
     push:finish() --y acuérdate de cerrarlo también
 end
 
