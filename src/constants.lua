@@ -14,8 +14,14 @@ BALL_SPEED = 100
 
 PADDLE_SPEED = 150
 
-COLORS = {
+--[[ Combinaciín preferida
     ['bckg'] = {23, 24, 67, 255},
     ['ball'] = {0xFF, 0x7F, 0, 255}
+]]--
+COLORS = {
+    ['k'] = {0,0,0,255},
+    ['wh'] = {255,255,255,255},
+    ['bckg'] = {23, 24, 67, 255},
+    ['dk-bckg'] = {7,8,33,255},
+    ['ball'] = {0xFF, 0x7F, 0, 255}
 }
---Fin constantes

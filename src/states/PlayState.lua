@@ -17,12 +17,14 @@ function PlayState:update(dt)
 
         self.ball.x = self.player1.x + self.player1.w + self.ball.r
         self.ball.vx = -self.ball.vx * 1.05
+        sfx['HitPlayer1']:play()
         self.ball:speedToSpin(self.player1)
     end
 
     if self.ball:collides(self.player2) then
         self.ball.x = self.player2.x - self.ball.r
         self.ball.vx = -self.ball.vx * 1.05
+        sfx['HitPlayer2']:play()
         self.ball:speedToSpin(self.player2)
     end
 
@@ -30,10 +32,12 @@ function PlayState:update(dt)
     if (self.ball.y - self.ball.r) <= (MARGIN) then
         self.ball.y = MARGIN + self.ball.r
         self.ball.vy = -self.ball.vy
+        sfx['HitWall']:play()
     end
     if (self.ball.y + self.ball.r) >= (GAME_HEIGHT-MARGIN) then
         self.ball.y = GAME_HEIGHT - MARGIN - self.ball.r
         self.ball.vy = -self.ball.vy 
+        sfx['HitWall']:play()
     end
     
     if self.ball.x < MARGIN then
@@ -67,7 +71,6 @@ function PlayState:update(dt)
     self.player1:update(dt)
     self.player2:update(dt)
     self.ball:update(dt)
-    print(self.ball.spin)
 end
 
 function PlayState:draw()
@@ -82,5 +85,7 @@ function PlayState:draw()
 
     --Pelota
     self.ball:draw() 
+
+    drawBounds()
 end
 

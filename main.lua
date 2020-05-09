@@ -10,15 +10,25 @@ end
 
 function love.load()
     
-    love.graphics.setDefaultFilter('nearest', 'nearest')
+    love.graphics.setDefaultFilter('linear', 'nearest')
     --Seed
     math.randomseed(os.time())
 
-    smallFont = love.graphics.newFont('font.ttf', 8)
-    mediumFont = love.graphics.newFont('font.ttf', 24)
-    scoreFont = love.graphics.newFont('font.ttf', 32)
-    titleFont = love.graphics.newFont('font.ttf', 46)
+    smallFont = love.graphics.newFont('assets/font.ttf', 8)
+    mediumFont = love.graphics.newFont('assets/font.ttf', 24)
+    scoreFont = love.graphics.newFont('assets/font.ttf', 32)
+    titleFont = love.graphics.newFont('assets/font.ttf', 60)
     love.graphics.setFont(mediumFont)
+
+    sfx = {
+        ['TitleSelect'] = love.audio.newSource('assets/sfx/TitleSelect.wav', 'static'),
+        --['TitleEnter'] = love.audio.newSource('assets/sfx/'),
+        ['HitPlayer1'] = love.audio.newSource('assets/sfx/HitPlayer1.wav', 'static'),
+        ['HitPlayer2'] = love.audio.newSource('assets/sfx/HitPlayer2.wav', 'static'),
+        ['HitWall'] = love.audio.newSource('assets/sfx/HitWall.wav', 'static'),
+        ['goal'] = nil
+    }
+    love.audio.setVolume(0.8)
 
 
     -- Pa poner una resolución específica
@@ -29,11 +39,16 @@ function love.load()
     })
 
     --Post procesado
-    --[[
-    effect = moonshine(moonshine.effects.scanlines).chain(moonshine.effects.crt)
+    
+    effect = moonshine(moonshine.effects.glow).chain(moonshine.effects.scanlines).chain(moonshine.effects.crt)
     effect.resize(push:getDimensions())
-    effect.disable("scanlines")
-    ]]--
+    --effect.disable("glow")
+    effect.params = {
+        crt = {feather = 0},
+        scanlines = {opacity = 0.05},
+        glow = {strength = 0.8}
+    }
+    
     
 
     --Inicializar máquina de estados
@@ -43,7 +58,7 @@ function love.load()
         ['play'] = function() return PlayState() end    
     }
 
-    gStateMachine:change('title')
+    gStateMachine:change('play')
 
     --Tabla de entradas
     love.keyboard.keysPressed = {}
@@ -77,18 +92,25 @@ end
 
 function love.draw()
     push:start() --acuérdate de empezar push en draw
+    love.graphics.clear(love.math.colorFromBytes(3,15,3,255))
+    effect(function()
     love.graphics.clear(love.math.colorFromBytes(COLORS['bckg']))
 
     gStateMachine:draw()
+    
+    end)
+    displayFPS()
+    push:finish() --y acuérdate de cerrarlo también
+end
+
+function drawBounds()
+    prevColor = {love.graphics.getColor()}
     love.graphics.setColor(love.math.colorFromBytes(COLORS['bckg']))
     love.graphics.rectangle('fill',0,0,MARGIN,GAME_HEIGHT)
     love.graphics.rectangle('fill', GAME_WIDTH-MARGIN, 0, MARGIN, GAME_HEIGHT)
     love.graphics.setColor(1,1,1,1)
     love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
-
-    displayFPS()
-
-    push:finish() --y acuérdate de cerrarlo también
+    love.graphics.setColor(prevColor)
 end
 
 function displayScore(player1, player2)
@@ -99,7 +121,8 @@ end
 
 function displayFPS()
     love.graphics.setFont(smallFont)
+    prevColor = {love.graphics.getColor()}
     love.graphics.setColor(0,1,0,1)
     love.graphics.print('FPS: '..tostring(love.timer.getFPS()), 5, 5)
-    love.graphics.setColor(1,1,1,1)
+    love.graphics.setColor(prevColor)
 end

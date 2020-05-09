@@ -17,9 +17,10 @@ function Ball:init(x, y, vx, vy)
 end
 
 function Ball:draw()
+    prevColor = {love.graphics.getColor()}
     love.graphics.setColor(love.math.colorFromBytes(COLORS['ball']))
     love.graphics.ellipse('fill', self.x, self.y, self.r, self.r)
-    love.graphics.setColor(1,1,1,1)
+    love.graphics.setColor(prevColor)
 end
 
 function Ball:update(dt)
