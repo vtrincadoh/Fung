@@ -86,6 +86,8 @@ function PlayState:draw()
     --Pelota
     self.ball:draw() 
 
-    drawBounds()
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
+    drawBounds({love.math.colorFromBytes(COLORS['bckg'])})
 end
 
