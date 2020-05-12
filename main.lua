@@ -1,6 +1,19 @@
 require 'src/dependencies'
 
 
+--Post procesado
+effect = moonshine(moonshine.effects.chromasep)
+.chain(moonshine.effects.scanlines)
+.chain(moonshine.effects.crt)
+
+effect.params = {
+    crt = {feather = 0},
+    scanlines = {opacity = 0.05},
+    chromasep = {radius = 1.8, angle = 0},
+}  
+
+humEnabled = true
+
 function gaussian_curve(x,amp,prom,dsv)
     variacion = (x-prom)^2
     cts = -1/2*dsv^2
@@ -31,7 +44,6 @@ function love.load()
         ['goal'] = nil
     }
     love.audio.setVolume(0.8)
-    --sfx['Startup']:play()
 
 
     -- Pa poner una resolución específica
@@ -41,22 +53,14 @@ function love.load()
         resizable = false
     })
 
-    --Post procesado
-    effect = moonshine(moonshine.effects.chromasep).chain(moonshine.effects.scanlines).chain(moonshine.effects.crt)
     effect.resize(push:getDimensions())
-    effect.params = {
-        crt = {feather = 0},
-        scanlines = {opacity = 0.05},
-        chromasep = {radius = 1.8, angle = 0},
-    }
-    --effect.disable('chromasep', 'scanlines')
-    
 
     --Inicializar máquina de estados
     gStateMachine = StateMachine{
         ['title'] = function() return TitleState() end,
         ['serve'] = function() return ServeState() end,
-        ['play'] = function() return PlayState() end    
+        ['play'] = function() return PlayState() end,
+        ['menu'] = function() return MenuState() end
     }
 
     gStateMachine:change('title')
@@ -67,13 +71,11 @@ function love.load()
 end
 
 function love.keypressed(key)
-
     love.keyboard.keysPressed[key] = true
-
-    if key == 'escape' then
-        love.event.quit()
+    if key == 'h' then
+        sfx['Static']:setLooping(false)
+        sfx['Static']:pause()
     end
-
 end
 
 function love.keyboard.wasPressed(key)
@@ -85,7 +87,22 @@ function love.keyboard.wasPressed(key)
 end
 
 function love.update(dt)
+    
     gStateMachine:update(dt)
+
+    if love.keyboard.wasPressed('h') then
+        if humEnabled then
+            humEnabled = false
+        else
+            humEnabled = true
+        end
+    end
+    
+    if hasPlayed and humEnabled then
+        sfx['Static']:play()
+    else
+        sfx['Static']:stop()
+    end
     love.keyboard.keysPressed = {}
 
 end
@@ -127,4 +144,8 @@ function displayFPS()
 end
 function map_range(s, a1, a2, b1, b2)
     return b1 + (s-a1)*(b2-b1)/(a2-a1)
+end
+
+function love.resize(w,h)
+    push:resize(w,h)
 end

@@ -1,46 +1,51 @@
 TitleState = Class{__includes = BaseState}
 
-function TitleState:init()
-    self.options = {
-        ['play'] = nil,
-        ['quit'] = nil
-    }
-    self.currOpt = 1
-    self.a = 255
-    self.t = 0
-    sfx['Startup']:play()
-end
+local highlighted = 1
+local timer = 0
+local alfa = 255
+local humEnabled = true
 
 function TitleState:update(dt)    
-    if self.a > 0 then
-        self.t = self.t + dt
-        self.a = 1 - math.exp(4.5*(self.t-3))
+    if alfa > 0 then
+        timer = timer + dt
+        alfa = 1 - math.exp(5*(timer-3.5))
+    end
+    if  alfa < 0.95 and alfa > 0.8 then
+        sfx['Startup']:play()
+        hasPlayed = true
     end
 
-    effect.scanlines.opacity = map_range(self.a, 255, 0, 0, 0.05)
-
-    if love.keyboard.wasPressed('o') then
-        self.a = 255
-        self.t = 0
-    end
-
-    if not sfx['Startup']:isPlaying() then
+    if hasPlayed and not sfx['Startup']:isPlaying() then
         sfx['Static']:setLooping(true)
         sfx['Static']:play()
     end
+    if hasPlayed then
+        if love.keyboard.wasPressed('down') or love.keyboard.wasPressed('s') or love.keyboard.wasPressed('up') or love.keyboard.wasPressed('w') then
+            highlighted = highlighted == 1 and 2 or 1
+            sfx['TitleSelect']:play()
+        end
+        if love.keyboard.wasPressed('return') or love.keyboard.wasPressed('enter') then
+            --sfx['TitleConfirm']:play()
+            if highlighted == 1 then
+                gStateMachine:change('play')
+            elseif highlighted == 2 then
+                love.event.quit()
+            end
+        end
+    end
+
+    if love.keyboard.wasPressed('escape') then
+        --sfx['Goodbye']:stop()
+        love.event.quit()
+    end
+
     if math.random() < 0.01 then
         titleOffset = 4
     else
         titleOffset = 0
     end
-    if love.keyboard.wasPressed('down') or love.keyboard.wasPressed('s') then
-        self.currOpt = self.currOpt + 1
-        sfx['TitleSelect']:play()
-    end
-    if love.keyboard.wasPressed('up') or love.keyboard.wasPressed('w') then
-        self.currOpt = self.currOpt - 1
-        sfx['TitleSelect']:play()
-    end
+
+    --print(self.currOpt)
     
 end     
 
@@ -62,16 +67,20 @@ function TitleState:draw()
     love.graphics.printf('play', 0, 110, GAME_WIDTH, 'center')
     love.graphics.printf('quit', 0, 150, GAME_WIDTH, 'center')
     --Selector(prueba)
-    love.graphics.printf('>', -40, 110, GAME_WIDTH, 'center')
+    if highlighted == 1 then
+        love.graphics.printf('>', -40, 110, GAME_WIDTH, 'center')
+    elseif highlighted == 2 then
+        love.graphics.printf('>', -40, 150, GAME_WIDTH, 'center')
+    end
+
     --Margen
     love.graphics.setColor(1,1,1,1)
     love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
     drawBounds({love.math.colorFromBytes(COLORS['bckg'])})
     --Splash
-    if self.a > 0 then
-        --love.graphics.rer(love.math.colorFromBytes(0,0,0,self.a))
-        love.graphics.setColor(love.math.colorFromBytes(78,94,83,self.a*255))
+    if alfa > 0 then
+        love.graphics.setColor(love.math.colorFromBytes(78,94,83,alfa*255))
         love.graphics.rectangle('fill', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN+8, GAME_HEIGHT-2*MARGIN+8)
-        drawBounds({0,0,0,self.a})
+        drawBounds({0,0,0,alfa})
     end
 end

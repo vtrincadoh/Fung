@@ -12,8 +12,11 @@ function PlayState:update(dt)
     if love.keyboard.wasPressed('o') then
         self.ball:reset()
     end
-     --Colisiones con paletas
-     if self.ball:collides(self.player1) then
+   
+
+
+    --Colisiones con paletas
+    if self.ball:collides(self.player1) then
 
         self.ball.x = self.player1.x + self.player1.w + self.ball.r
         self.ball.vx = -self.ball.vx * 1.05
@@ -51,6 +54,11 @@ function PlayState:update(dt)
 
 
     --Input
+    if love.keyboard.wasPressed('escape') then
+        --gStateMachine:change('menu')
+        love.event.quit()
+    end
+
     if love.keyboard.isDown('w') then
         self.player1.vy = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
