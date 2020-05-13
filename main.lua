@@ -113,7 +113,7 @@ function love.draw()
         love.graphics.clear(love.math.colorFromBytes(COLORS['bckg']))
         gStateMachine:draw()
     end)
-    displayFPS()
+    --displayFPS()
     push:finish() --y acuérdate de cerrarlo también
 end
 

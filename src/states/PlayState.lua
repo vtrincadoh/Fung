@@ -13,13 +13,18 @@ function PlayState:update(dt)
         self.ball:reset()
     end
    
-
-
     --Colisiones con paletas
     if self.ball:collides(self.player1) then
 
         self.ball.x = self.player1.x + self.player1.w + self.ball.r
         self.ball.vx = -self.ball.vx * 1.05
+
+        if self.ball.y < self.player1.y + (self.player1.h / 2) then
+            self.ball.vy = -20 + -(5 * (self.player1.y + self.player1.h / 2 -self.ball.y))
+        elseif self.ball.y > self.player1.y + (self.player1.h / 2) then
+            self.ball.vy = 20 + (5 * math.abs(self.player1.y + self.player1.h / 2 -self.ball.y))
+        end
+
         sfx['HitPlayer1']:play()
         self.ball:speedToSpin(self.player1)
     end
@@ -27,6 +32,13 @@ function PlayState:update(dt)
     if self.ball:collides(self.player2) then
         self.ball.x = self.player2.x - self.ball.r
         self.ball.vx = -self.ball.vx * 1.05
+
+        if self.ball.y < self.player2.y + (self.player2.h / 2) then
+            self.ball.vy = -20 + -(5 * (self.player2.y + self.player2.h / 2 -self.ball.y))
+        elseif self.ball.y > self.player2.y + (self.player2.h / 2) then
+            self.ball.vy = 20 + (5 * math.abs(self.player2.y + self.player2.h / 2 -self.ball.y))
+        end
+
         sfx['HitPlayer2']:play()
         self.ball:speedToSpin(self.player2)
     end
