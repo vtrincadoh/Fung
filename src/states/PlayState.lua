@@ -17,41 +17,62 @@ function PlayState:update(dt)
     if self.ball:collides(self.player1) then
 
         self.ball.x = self.player1.x + self.player1.w + self.ball.r
-        self.ball.vx = -self.ball.vx * 1.05
+        self.ball.vx = -self.ball.vx
 
-        if self.ball.y < self.player1.y + (self.player1.h / 2) then
-            self.ball.vy = -20 + -(5 * (self.player1.y + self.player1.h / 2 -self.ball.y))
-        elseif self.ball.y > self.player1.y + (self.player1.h / 2) then
-            self.ball.vy = 20 + (5 * math.abs(self.player1.y + self.player1.h / 2 -self.ball.y))
+        if self.player1.vy < 0 then
+            self.ball.spin = self.ball.spin + 1
+        elseif self.player1.vy > 0 then
+            self.ball.spin = self.ball.spin - 1
         end
-
+        self.ball.fallsign = 1
         sfx['HitPlayer1']:play()
-        self.ball:speedToSpin(self.player1)
     end
 
     if self.ball:collides(self.player2) then
         self.ball.x = self.player2.x - self.ball.r
-        self.ball.vx = -self.ball.vx * 1.05
-
-        if self.ball.y < self.player2.y + (self.player2.h / 2) then
-            self.ball.vy = -20 + -(5 * (self.player2.y + self.player2.h / 2 -self.ball.y))
-        elseif self.ball.y > self.player2.y + (self.player2.h / 2) then
-            self.ball.vy = 20 + (5 * math.abs(self.player2.y + self.player2.h / 2 -self.ball.y))
+        self.ball.vx = -self.ball.vx
+        
+        if self.player2.vy < 0 then
+            self.ball.spin = self.ball.spin - 1
+        elseif self.player2.vy > 0 then
+            self.ball.spin = self.ball.spin + 1
         end
 
+        self.ball.fallsign = -1
+
         sfx['HitPlayer2']:play()
-        self.ball:speedToSpin(self.player2)
+    end
+
+    --Acotar spin de la pelota
+    if self.ball.spin > 2 then
+        self.ball.spin = 2
+    elseif self.ball.spin < -2 then
+        self.ball.spin = -2
     end
 
     --Condiciones de borde
     if (self.ball.y - self.ball.r) <= (MARGIN) then
         self.ball.y = MARGIN + self.ball.r
-        self.ball.vy = -self.ball.vy
+        self.ball.vy = -0.8*self.ball.vy
+        self.ball.vx = self.ball.vx - BORDER_FRICTION*self.ball.spin
+
+        --disminuir spin
+        if self.ball.spin ~= 0 and self.ball.vx > 0 then
+            self.ball.spin = self.ball.spin + 1
+        elseif self.ball.spin ~= 0 and self.ball.vx < 0 then
+            self.ball.spin = self.ball.spin - 1
+        end
         sfx['HitWall']:play()
     end
     if (self.ball.y + self.ball.r) >= (GAME_HEIGHT-MARGIN) then
         self.ball.y = GAME_HEIGHT - MARGIN - self.ball.r
-        self.ball.vy = -self.ball.vy 
+        self.ball.vy = -0.8*self.ball.vy 
+        self.ball.vx = self.ball.vx + BORDER_FRICTION*self.ball.spin
+        if self.ball.spin ~= 0 and self.ball.vx > 0 then
+            self.ball.spin = self.ball.spin -1
+        elseif self.ball.spin ~= 0 and self.ball.vx < 0 then
+            self.ball.spin = self.ball.spin + 1
+        end
         sfx['HitWall']:play()
     end
     
@@ -72,7 +93,7 @@ function PlayState:update(dt)
     end
 
     if love.keyboard.isDown('w') then
-        self.player1.vy = -PADDLE_SPEED
+       self.player1.vy = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
         self.player1.vy = PADDLE_SPEED
     else
@@ -109,5 +130,6 @@ function PlayState:draw()
     love.graphics.setColor(1,1,1,1)
     love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
     drawBounds({love.math.colorFromBytes(COLORS['bckg'])})
+    gDebugArgs = {['FPS'] = love.timer.getFPS(), ['Spin'] = self.ball.spin}
 end
 

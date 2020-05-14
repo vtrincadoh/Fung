@@ -2,24 +2,22 @@ require 'src/dependencies'
 
 
 --Post procesado
-effect = moonshine(moonshine.effects.chromasep)
-.chain(moonshine.effects.scanlines)
+crt = moonshine(moonshine.effects.scanlines)
 .chain(moonshine.effects.crt)
 
-effect.params = {
+crt.params = {
     crt = {feather = 0},
     scanlines = {opacity = 0.05},
-    chromasep = {radius = 1.8, angle = 0},
 }  
+
+chromasep = moonshine(moonshine.effects.chromasep)
+chromasep.params = {
+    chromasep = {radius = 0.8, angle = 0},
+}
 
 humEnabled = true
 
-function gaussian_curve(x,amp,prom,dsv)
-    variacion = (x-prom)^2
-    cts = -1/2*dsv^2
-    return amp*math.exp(cts*variacion)
-end
-
+gDebugArgs = {}
 
 function love.load()
     
@@ -49,18 +47,17 @@ function love.load()
     -- Pa poner una resolución específica
     push:setupScreen(GAME_WIDTH, GAME_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         vsync = true,
-        fullscreen = false,
+        fullscreen = true,
         resizable = false
     })
 
-    effect.resize(push:getDimensions())
+    crt.resize(push:getDimensions())
 
     --Inicializar máquina de estados
     gStateMachine = StateMachine{
         ['title'] = function() return TitleState() end,
         ['serve'] = function() return ServeState() end,
-        ['play'] = function() return PlayState() end,
-        ['menu'] = function() return MenuState() end
+        ['play'] = function() return PlayState() end
     }
 
     gStateMachine:change('title')
@@ -107,13 +104,15 @@ function love.update(dt)
 
 end
 
-function love.draw()
+function love.draw()    
     push:start() --acuérdate de empezar push en draw
-    effect(function()
+    chromasep(function()
+    crt(function()
         love.graphics.clear(love.math.colorFromBytes(COLORS['bckg']))
         gStateMachine:draw()
     end)
-    --displayFPS()
+    end)
+    displayDebug(gDebugArgs)
     push:finish() --y acuérdate de cerrarlo también
 end
 
@@ -135,11 +134,15 @@ function displayScore(player1, player2)
     love.graphics.print(tostring(player2.score), GAME_WIDTH/2 + 30, GAME_HEIGHT/3)
 end
 
-function displayFPS()
+function displayDebug(gDebugArgs)
+    iterator = 0
     love.graphics.setFont(smallFont)
     prevColor = {love.graphics.getColor()}
     love.graphics.setColor(0,1,0,1)
-    love.graphics.print('FPS: '..tostring(love.timer.getFPS()), 5, 5)
+    for k, pair in pairs(gDebugArgs) do
+        love.graphics.print(k..': '..pair, 5, 5 + iterator * 10)
+        iterator = iterator +1
+    end
     love.graphics.setColor(prevColor)
 end
 function map_range(s, a1, a2, b1, b2)

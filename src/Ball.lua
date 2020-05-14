@@ -14,29 +14,20 @@ function Ball:init(x, y, vx, vy)
 
     --Spin (-)anti-clockwise, (+) clockwise
     self.spin = 0
+    self.fallsign = 1
 end
 
 function Ball:draw()
     prevColor = {love.graphics.getColor()}
-    love.graphics.setColor(love.math.colorFromBytes(COLORS['ball']))
+    love.graphics.setColor(love.math.colorFromBytes(BALL_COLOR[self.spin]))
     love.graphics.ellipse('fill', self.x, self.y, self.r, self.r)
     love.graphics.setColor(prevColor)
 end
 
 function Ball:update(dt)
     self.x = self.x + self.vx*dt
-    --self.vy = 0
+    self.vy = self.vy + FALL_FACTOR*self.fallsign*self.spin*dt
     self.y = self.y + self.vy*dt
-end
-
-
-function Ball:speedToSpin(paddle)
-    dspeed = paddle.vy -self.vy
-    if paddle.x < self.x then
-        self.spin = self.spin - (dspeed)/self.r
-    else
-        self.spin = self.spin + (dspeed)/self.r
-    end
 end
 
 function Ball:reset()
