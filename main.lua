@@ -36,12 +36,16 @@ function love.load()
         ['HitPlayer1'] = love.audio.newSource('assets/sfx/HitPlayer1.wav', 'static'),
         ['HitPlayer2'] = love.audio.newSource('assets/sfx/HitPlayer2.wav', 'static'),
         ['HitWall'] = love.audio.newSource('assets/sfx/HitWall.wav', 'static'),
+        ['Goal'] = love.audio.newSource('assets/sfx/Goal.wav', 'static'),
         ['Startup'] = love.audio.newSource('assets/sfx/Startup.wav', 'static'),
         ['Static'] = love.audio.newSource('assets/sfx/Static.wav', 'static'),
-        ['goal'] = nil
+        ['Fanfare'] = love.audio.newSource('assets/sfx/Fanfare.wav', 'static'),
+        ['Goodbye'] = love.audio.newSource('assets/sfx/Goodbye.wav', 'static')
     }
     love.audio.setVolume(0.8)
-
+    sfx['Goal']:setVolume(0.1)
+    sfx['Fanfare']:setVolume(0.1)
+    sfx['Goodbye']:setVolume(0.1)
 
     -- Pa poner una resolución específica
     push:setupScreen(GAME_WIDTH, GAME_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {

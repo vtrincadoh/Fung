@@ -4,7 +4,10 @@ function PlayState:init()
     self.player1 = Paddle(MARGIN+5, GAME_HEIGHT/2 - PADDLE_HEIGHT/2, PADDLE_WIDTH, PADDLE_HEIGHT)
     self.player2 = Paddle(GAME_WIDTH-MARGIN-5-PADDLE_WIDTH, GAME_HEIGHT/2 - PADDLE_HEIGHT/2, PADDLE_WIDTH, PADDLE_HEIGHT)
     self.ball = Ball({})
-    self.ball:reset()
+end
+
+function PlayState:enter(serves)
+    self.ball:reset(serves)
 end
 
 function PlayState:update(dt)
@@ -77,10 +80,12 @@ function PlayState:update(dt)
     end
     
     if self.ball.x < MARGIN then
+        sfx['Goal']:play()
         gScoreP2 = gScoreP2 + 1
         gStateMachine:change('serve', 2)
     end
     if self.ball.x > GAME_WIDTH - MARGIN then
+        sfx['Goal']:play()
         gScoreP1 = gScoreP1 + 1
         gStateMachine:change('serve', 1)
         self.ball:reset()

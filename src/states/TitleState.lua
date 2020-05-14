@@ -2,7 +2,7 @@ TitleState = Class{__includes = BaseState}
 
 local highlighted = 1
 local timer = 0
-local alfa = 255
+local alfa = 1
 local humEnabled = true
 
 function TitleState:update(dt)    
@@ -25,18 +25,20 @@ function TitleState:update(dt)
             sfx['TitleSelect']:play()
         end
         if love.keyboard.wasPressed('return') or love.keyboard.wasPressed('enter') then
-            --sfx['TitleConfirm']:play()
             if highlighted == 1 then
+                --sfx['TitleConfirm']:play()
                 gStateMachine:change('play')
             elseif highlighted == 2 then
-                --sfx['Goodbye']:play()
-                love.event.quit()
+                sfx['Goodbye']:play()
+                love.timer.sleep(0.5)
+                love.event.quit()                
             end
         end
     end
 
     if love.keyboard.wasPressed('escape') then
-        --sfx['Goodbye']:play()
+        sfx['Goodbye']:play()     
+        love.timer.sleep(0.5)
         love.event.quit()
     end
 

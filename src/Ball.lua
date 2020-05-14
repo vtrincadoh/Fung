@@ -30,11 +30,17 @@ function Ball:update(dt)
     self.y = self.y + self.vy*dt
 end
 
-function Ball:reset()
+function Ball:reset(serves)
     angle = 2*math.pi*math.random()
     self.x = GAME_WIDTH/2
     self.y = GAME_HEIGHT/2
-    self.vx = BALL_SPEED*math.cos(angle)
+    if serves == 1 then
+        self.vx = math.abs(BALL_SPEED*math.cos(angle))
+    elseif serves == 2 then
+        self.vx = -math.abs(BALL_SPEED*math.cos(angle))
+    else 
+        self.vx = BALL_SPEED*math.cos(angle)
+    end
     self.vy = BALL_SPEED*math.sin(angle)
     self.spin = 0
 end

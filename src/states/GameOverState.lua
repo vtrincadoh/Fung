@@ -2,6 +2,7 @@ GameOverState = Class{__includes = BaseState}
 
 function GameOverState:enter(scoringPlayer)
     winningPlayer = scoringPlayer
+    sfx['Fanfare']:play()
 end
 
 function GameOverState:update(dt)

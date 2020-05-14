@@ -1,7 +1,7 @@
 ServeState = Class{__includes = PlayState}
 
 function ServeState:enter(scoringPlayer)
-    if gScoreP1 == 10 or gScoreP1 == 10 then
+    if gScoreP1 == 10 or gScoreP2 == 10 then
         gStateMachine:change('gameover', scoringPlayer)
     end
     self.player1.y = GAME_HEIGHT/2 - self.player1.h/2
@@ -18,7 +18,7 @@ function ServeState:update(dt)
     end
 
     if love.keyboard.wasPressed(serveKey) then
-        gStateMachine:change('play')
+        gStateMachine:change('play', serves)
     end
 
     if love.keyboard.isDown('w') then
