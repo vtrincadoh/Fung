@@ -77,11 +77,12 @@ function PlayState:update(dt)
     end
     
     if self.ball.x < MARGIN then
-        self.player2.score = self.player2.score + 1
-        self.ball:reset()
+        gScoreP2 = gScoreP2 + 1
+        gStateMachine:change('serve', 2)
     end
     if self.ball.x > GAME_WIDTH - MARGIN then
-        self.player1.score = self.player1.score + 1
+        gScoreP1 = gScoreP1 + 1
+        gStateMachine:change('serve', 1)
         self.ball:reset()
     end
 
@@ -118,7 +119,7 @@ function PlayState:draw()
     
     love.graphics.line(GAME_WIDTH/2, MARGIN, GAME_WIDTH/2,GAME_HEIGHT-MARGIN)
     --Mostrar puntaje
-    displayScore(self.player1, self.player2)
+    displayScore(gScoreP1, gScoreP2)
     
     --Paddle
     self.player1:draw()
@@ -127,9 +128,8 @@ function PlayState:draw()
     --Pelota
     self.ball:draw() 
 
-    love.graphics.setColor(1,1,1,1)
     love.graphics.rectangle('line', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN, GAME_HEIGHT-2*MARGIN,5,5)
     drawBounds({love.math.colorFromBytes(COLORS['bckg'])})
-    gDebugArgs = {['FPS'] = love.timer.getFPS(), ['Spin'] = self.ball.spin}
+    --gDebugArgs = {['FPS'] = love.timer.getFPS(), ['Spin'] = self.ball.spin}
 end
 

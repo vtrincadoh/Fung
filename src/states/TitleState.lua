@@ -29,13 +29,14 @@ function TitleState:update(dt)
             if highlighted == 1 then
                 gStateMachine:change('play')
             elseif highlighted == 2 then
+                --sfx['Goodbye']:play()
                 love.event.quit()
             end
         end
     end
 
     if love.keyboard.wasPressed('escape') then
-        --sfx['Goodbye']:stop()
+        --sfx['Goodbye']:play()
         love.event.quit()
     end
 
@@ -83,4 +84,15 @@ function TitleState:draw()
         love.graphics.rectangle('fill', MARGIN, MARGIN, GAME_WIDTH-2*MARGIN+8, GAME_HEIGHT-2*MARGIN+8)
         drawBounds({0,0,0,alfa})
     end
+end
+
+function TitleState:enter(introDisabled)
+    if introDisabled then
+        alfa = 0
+    end
+end
+
+function TitleState:exit()
+    gScoreP1 = 0
+    gScoreP2 = 0
 end

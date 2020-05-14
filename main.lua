@@ -1,6 +1,5 @@
 require 'src/dependencies'
 
-
 --Post procesado
 crt = moonshine(moonshine.effects.scanlines)
 .chain(moonshine.effects.crt)
@@ -26,7 +25,7 @@ function love.load()
     math.randomseed(os.time())
 
     smallFont = love.graphics.newFont('assets/font.ttf', 8)
-    mediumFont = love.graphics.newFont('assets/font.ttf', 24)
+    mediumFont = love.graphics.newFont('assets/font.ttf', 18)
     scoreFont = love.graphics.newFont('assets/font.ttf', 32)
     titleFont = love.graphics.newFont('assets/font.ttf', 60)
     love.graphics.setFont(mediumFont)
@@ -57,10 +56,12 @@ function love.load()
     gStateMachine = StateMachine{
         ['title'] = function() return TitleState() end,
         ['serve'] = function() return ServeState() end,
-        ['play'] = function() return PlayState() end
+        ['play'] = function() return PlayState() end,
+        ['gameover'] = function() return GameOverState() end
     }
 
     gStateMachine:change('title')
+    introDisabled = false
 
     --Tabla de entradas
     love.keyboard.keysPressed = {}
@@ -128,10 +129,10 @@ function drawBounds(color)
     love.graphics.setColor(prevColor)
 end
 
-function displayScore(player1, player2)
+function displayScore(score1, score2)
     love.graphics.setFont(scoreFont)
-    love.graphics.print(tostring(player1.score), GAME_WIDTH/2 - 50, GAME_HEIGHT/3)
-    love.graphics.print(tostring(player2.score), GAME_WIDTH/2 + 30, GAME_HEIGHT/3)
+    love.graphics.print(tostring(score1), GAME_WIDTH/2 - 50, GAME_HEIGHT/3)
+    love.graphics.print(tostring(score2), GAME_WIDTH/2 + 30, GAME_HEIGHT/3)
 end
 
 function displayDebug(gDebugArgs)
